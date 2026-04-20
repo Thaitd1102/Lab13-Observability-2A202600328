@@ -7,8 +7,9 @@ load_dotenv()
 import os
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from structlog.contextvars import bind_contextvars
+from pathlib import Path
 
 from .agent import LabAgent
 from .incidents import disable, enable, status
@@ -51,6 +52,15 @@ async def metrics_reset() -> dict:
     """Reset all metrics (for testing between scenarios)."""
     reset()
     return {"ok": True, "message": "Metrics reset"}
+
+
+@app.get("/dashboard")
+async def dashboard() -> FileResponse:
+    """Serve the 6-panel dashboard HTML report."""
+    dashboard_path = Path(__file__).parent.parent / "data" / "dashboard_report.html"
+    if not dashboard_path.exists():
+        raise HTTPException(status_code=404, detail="Dashboard report not found. Run: python scripts/generate_dashboard.py")
+    return FileResponse(dashboard_path, media_type="text/html")
 
 
 @app.post("/chat", response_model=ChatResponse)
