@@ -3,10 +3,10 @@
 > **Instruction**: Fill in all sections below. This report is designed to be parsed by an automated grading assistant. Ensure all tags (e.g., `[GROUP_NAME]`) are preserved.
 
 ## 1. Team Metadata
-- [GROUP_NAME]: 
-- [REPO_URL]: 
+- [GROUP_NAME]: Lab13-Observability-2A202600328
+- [REPO_URL]: https://github.com/Thaitd1102/Lab13-Observability-2A202600328.git
 - [MEMBERS]:
-  - Member A: [Name] | Role: Logging & PII
+  - Member A: [Duc Thai] | Role: Logging & PII
   - Member B: [Name] | Role: Tracing & Enrichment
   - Member C: [Name] | Role: SLO & Alerts
   - Member D: [Name] | Role: Load Test & Dashboard
@@ -15,19 +15,53 @@
 ---
 
 ## 2. Group Performance (Auto-Verified)
-- [VALIDATE_LOGS_FINAL_SCORE]: /100
-- [TOTAL_TRACES_COUNT]: 
-- [PII_LEAKS_FOUND]: 
+- [VALIDATE_LOGS_FINAL_SCORE]: 100/100
+- [TOTAL_TRACES_COUNT]: (to be updated)
+- [PII_LEAKS_FOUND]: 0 
 
 ---
 
 ## 3. Technical Evidence (Group)
 
 ### 3.1 Logging & Tracing
-- [EVIDENCE_CORRELATION_ID_SCREENSHOT]: [Path to image]
-- [EVIDENCE_PII_REDACTION_SCREENSHOT]: [Path to image]
-- [EVIDENCE_TRACE_WATERFALL_SCREENSHOT]: [Path to image]
-- [TRACE_WATERFALL_EXPLANATION]: (Briefly explain one interesting span in your trace)
+- [EVIDENCE_CORRELATION_ID_SCREENSHOT]: (to be added)
+- [EVIDENCE_PII_REDACTION_SCREENSHOT]: (to be added)
+- [EVIDENCE_TRACE_WATERFALL_SCREENSHOT]: (to be added)
+- [TRACE_WATERFALL_EXPLANATION]: 
+
+**A1 - Correlation ID & Log Enrichment (COMPLETED ✓)**
+
+Implementation:
+- **middleware.py**: Generate x-request-id with format "req-<8-char-hex>", bind to structlog contextvars via `bind_contextvars()`, add response headers (x-request-id, x-response-time-ms)
+- **logging_config.py**: Enable PII scrubbing processor in structlog pipeline (scrub_event)
+- **main.py**: Enrich /chat endpoint logs with context binding:
+  - user_id_hash (hashed user_id)
+  - session_id
+  - feature (qa/summary)
+  - model (claude-sonnet-4-5)
+  - env (dev/prod)
+
+Results:
+- ✅ All required log fields present (ts, level, event, correlation_id, etc.)
+- ✅ 10 unique correlation IDs found across requests
+- ✅ No PII leaks detected (credit cards, SSNs redacted)
+- ✅ Validation Score: 100/100
+
+Sample Log Output:
+```json
+{
+  "correlation_id": "req-7815c060",
+  "user_id_hash": "105a9cef3903",
+  "session_id": "s10",
+  "feature": "qa",
+  "model": "claude-sonnet-4-5",
+  "env": "dev",
+  "ts": "2026-04-20T08:16:28.197991Z",
+  "level": "info",
+  "event": "response_sent",
+  "latency_ms": 150
+}
+```
 
 ### 3.2 Dashboard & SLOs
 - [DASHBOARD_6_PANELS_SCREENSHOT]: [Path to image]
