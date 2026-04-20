@@ -9,7 +9,7 @@ from structlog.contextvars import bind_contextvars
 from .agent import LabAgent
 from .incidents import disable, enable, status
 from .logging_config import configure_logging, get_logger
-from .metrics import record_error, snapshot
+from .metrics import record_error, snapshot, reset
 from .middleware import CorrelationIdMiddleware
 from .pii import hash_user_id, summarize_text
 from .schemas import ChatRequest, ChatResponse
@@ -40,6 +40,13 @@ async def health() -> dict:
 @app.get("/metrics")
 async def metrics() -> dict:
     return snapshot()
+
+
+@app.post("/metrics/reset")
+async def metrics_reset() -> dict:
+    """Reset all metrics (for testing between scenarios)."""
+    reset()
+    return {"ok": True, "message": "Metrics reset"}
 
 
 @app.post("/chat", response_model=ChatResponse)

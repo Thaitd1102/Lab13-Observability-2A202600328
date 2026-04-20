@@ -33,10 +33,10 @@ def generate_html_report(metrics: dict, output_path: str = "data/dashboard_repor
     
     # Determine SLO compliance
     compliance = {}
-    compliance["latency"] = "✅ PASS" if metrics.get("latency_p95", 999) < 3000 else "❌ FAIL"
-    compliance["error_rate"] = "✅ PASS" if metrics.get("error_rate_pct", 100) < 2 else "❌ FAIL"
-    compliance["cost"] = "✅ PASS" if metrics.get("total_cost_usd", 999) < 2.5 else "❌ FAIL"
-    compliance["quality"] = "✅ PASS" if metrics.get("quality_avg", 0) > 0.75 else "❌ FAIL"
+    compliance["latency"] = "[PASS]" if metrics.get("latency_p95", 999) < 3000 else "[FAIL]"
+    compliance["error_rate"] = "[PASS]" if metrics.get("error_rate_pct", 100) < 2 else "[FAIL]"
+    compliance["cost"] = "[PASS]" if metrics.get("total_cost_usd", 999) < 2.5 else "[FAIL]"
+    compliance["quality"] = "[PASS]" if metrics.get("quality_avg", 0) > 0.75 else "[FAIL]"
     
     html_content = f"""
 <!DOCTYPE html>
@@ -64,7 +64,7 @@ def generate_html_report(metrics: dict, output_path: str = "data/dashboard_repor
 </head>
 <body>
     <div class="container">
-        <h1>📊 Day 13 Observability Lab - 6-Panel Dashboard</h1>
+        <h1>Day 13 Observability Lab - 6-Panel Dashboard</h1>
         <p class="timestamp">Generated: {datetime.utcnow().isoformat()}</p>
         
         <!-- Panel 1: Request Count -->
@@ -188,7 +188,7 @@ def generate_html_report(metrics: dict, output_path: str = "data/dashboard_repor
             </div>
             <div class="metric">
                 <span>Status</span>
-                <span class="metric-value {('status-pass' if metrics.get('quality_avg', 0) > 0.75 else 'status-fail')}">{('✅ ABOVE TARGET' if metrics.get('quality_avg', 0) > 0.75 else '❌ BELOW TARGET')}</span>
+                <span class="metric-value {('status-pass' if metrics.get('quality_avg', 0) > 0.75 else 'status-fail')}">{('[PASS] ABOVE TARGET' if metrics.get('quality_avg', 0) > 0.75 else '[FAIL] BELOW TARGET')}</span>
             </div>
         </div>
         
@@ -204,14 +204,14 @@ def generate_html_report(metrics: dict, output_path: str = "data/dashboard_repor
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    print(f"✅ Dashboard report generated: {output_path}")
+    print(f"[OK] Dashboard report generated: {output_path}")
 
 
 def generate_text_report(metrics: dict) -> None:
     """Generate text-based dashboard report."""
     
     print("\n" + "="*70)
-    print("📊 DAY 13 OBSERVABILITY LAB - 6-PANEL DASHBOARD REPORT")
+    print("DAY 13 OBSERVABILITY LAB - 6-PANEL DASHBOARD REPORT")
     print("="*70)
     print(f"Generated: {metrics.get('exported_at', 'N/A')}\n")
     
@@ -240,10 +240,10 @@ def generate_text_report(metrics: dict) -> None:
     # Panel 4
     print("PANEL 4: SLO COMPLIANCE STATUS")
     print("-" * 70)
-    print(f"  Latency P95 < 3000ms: {metrics.get('latency_p95', 0):.1f}ms - {'✅ PASS' if metrics.get('latency_p95', 999) < 3000 else '❌ FAIL'}")
-    print(f"  Error Rate < 2%: {metrics.get('error_rate_pct', 0):.2f}% - {'✅ PASS' if metrics.get('error_rate_pct', 100) < 2 else '❌ FAIL'}")
-    print(f"  Cost Budget < $2.5/day: ${metrics.get('total_cost_usd', 0):.4f} - {'✅ PASS' if metrics.get('total_cost_usd', 999) < 2.5 else '❌ FAIL'}")
-    print(f"  Quality Score > 0.75: {metrics.get('quality_avg', 0):.4f} - {'✅ PASS' if metrics.get('quality_avg', 0) > 0.75 else '❌ FAIL'}\n")
+    print(f"  Latency P95 < 3000ms: {metrics.get('latency_p95', 0):.1f}ms - {'[PASS]' if metrics.get('latency_p95', 999) < 3000 else '[FAIL]'}")
+    print(f"  Error Rate < 2%: {metrics.get('error_rate_pct', 0):.2f}% - {'[PASS]' if metrics.get('error_rate_pct', 100) < 2 else '[FAIL]'}")
+    print(f"  Cost Budget < $2.5/day: ${metrics.get('total_cost_usd', 0):.4f} - {'[PASS]' if metrics.get('total_cost_usd', 999) < 2.5 else '[FAIL]'}")
+    print(f"  Quality Score > 0.75: {metrics.get('quality_avg', 0):.4f} - {'[PASS]' if metrics.get('quality_avg', 0) > 0.75 else '[FAIL]'}\n")
     
     # Panel 5
     print("PANEL 5: LLM COST BREAKDOWN")
@@ -258,14 +258,14 @@ def generate_text_report(metrics: dict) -> None:
     print("-" * 70)
     print(f"  Average Quality Score: {metrics.get('quality_avg', 0):.4f}")
     print(f"  Quality Benchmark (Target): 0.75")
-    quality_status = '✅ ABOVE TARGET' if metrics.get('quality_avg', 0) > 0.75 else '❌ BELOW TARGET'
+    quality_status = '[PASS] ABOVE TARGET' if metrics.get('quality_avg', 0) > 0.75 else '[FAIL] BELOW TARGET'
     print(f"  Status: {quality_status}\n")
     
     print("="*70)
 
 
 if __name__ == "__main__":
-    print("📊 Generating Dashboard Report...")
+    print("[*] Generating Dashboard Report...")
     metrics = export_metrics()
     
     # Generate HTML report

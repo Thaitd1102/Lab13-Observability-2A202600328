@@ -23,9 +23,14 @@ def send_request(client: httpx.Client, payload: dict) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--concurrency", type=int, default=1, help="Number of concurrent requests")
+    parser.add_argument("-n", "--num-requests", type=int, default=None, help="Limit number of requests (default: all)")
     args = parser.parse_args()
 
     lines = [line for line in QUERIES.read_text(encoding="utf-8").splitlines() if line.strip()]
+    
+    # Limit number of requests if specified
+    if args.num_requests:
+        lines = lines[:args.num_requests]
     
     with httpx.Client(timeout=30.0) as client:
         if args.concurrency > 1:

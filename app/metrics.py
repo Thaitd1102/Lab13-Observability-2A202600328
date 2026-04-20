@@ -38,6 +38,10 @@ def percentile(values: list[int], p: int) -> float:
 
 
 def snapshot() -> dict:
+    """Get current metrics snapshot."""
+    total_errors = sum(ERRORS.values())
+    error_rate = (total_errors / TRAFFIC * 100) if TRAFFIC > 0 else 0.0
+    
     return {
         "traffic": TRAFFIC,
         "latency_p50": percentile(REQUEST_LATENCIES, 50),
@@ -48,5 +52,19 @@ def snapshot() -> dict:
         "tokens_in_total": sum(REQUEST_TOKENS_IN),
         "tokens_out_total": sum(REQUEST_TOKENS_OUT),
         "error_breakdown": dict(ERRORS),
+        "error_rate_pct": round(error_rate, 2),
         "quality_avg": round(mean(QUALITY_SCORES), 4) if QUALITY_SCORES else 0.0,
     }
+
+
+def reset() -> None:
+    """Reset all metrics (useful for testing)."""
+    global TRAFFIC
+    global REQUEST_LATENCIES, REQUEST_COSTS, REQUEST_TOKENS_IN, REQUEST_TOKENS_OUT, ERRORS, QUALITY_SCORES
+    TRAFFIC = 0
+    REQUEST_LATENCIES.clear()
+    REQUEST_COSTS.clear()
+    REQUEST_TOKENS_IN.clear()
+    REQUEST_TOKENS_OUT.clear()
+    ERRORS.clear()
+    QUALITY_SCORES.clear()
