@@ -1,0 +1,10 @@
+Metric,Value,Unit
+Traffic (total requests),10,count
+Latency P50,150.0,ms
+Latency P95,150.0,ms
+Latency P99,150.0,ms
+Average Cost,0.0023,USD
+Total Cost,0.023,USD
+Quality Score (avg),0.88,score
+Error Count,0,count
+Error Rate,0.0,%

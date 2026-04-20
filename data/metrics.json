@@ -1,0 +1,15 @@
+{
+  "traffic": 10,
+  "latency_p50": 150.0,
+  "latency_p95": 150.0,
+  "latency_p99": 150.0,
+  "avg_cost_usd": 0.0023,
+  "total_cost_usd": 0.023,
+  "tokens_in_total": 340,
+  "tokens_out_total": 1463,
+  "error_breakdown": {},
+  "quality_avg": 0.88,
+  "exported_at": "2026-04-20T08:41:17.421615",
+  "error_count": 0,
+  "error_rate_pct": 0.0
+}

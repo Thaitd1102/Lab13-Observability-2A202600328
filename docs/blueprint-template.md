@@ -64,13 +64,57 @@ Sample Log Output:
 ```
 
 ### 3.2 Dashboard & SLOs
-- [DASHBOARD_6_PANELS_SCREENSHOT]: [Path to image]
+- [DASHBOARD_6_PANELS_SCREENSHOT]: data/dashboard_report.html
 - [SLO_TABLE]:
-| SLI | Target | Window | Current Value |
-|---|---:|---|---:|
-| Latency P95 | < 3000ms | 28d | |
-| Error Rate | < 2% | 28d | |
-| Cost Budget | < $2.5/day | 1d | |
+| SLI | Target | Window | Current Value | Status |
+|---|---:|---|---:|---|
+| Latency P95 | < 3000ms | 28d | 150.0ms | ✅ PASS |
+| Error Rate | < 2% | 28d | 0.0% | ✅ PASS |
+| Cost Budget | < $2.5/day | 1d | $0.0198 | ✅ PASS |
+| Quality Score | > 0.75 | 28d | 0.88 | ✅ PASS |
+
+**A2 - Dashboard & SLO (COMPLETED ✓)**
+
+Implementation:
+- **scripts/export_metrics.py**: 
+  - Fetches metrics from running app API (`http://localhost:8000/metrics`)
+  - Exports to JSON and CSV formats
+  - Automatically calculates `error_rate_pct` from error_breakdown
+  
+- **scripts/generate_dashboard.py**: Generates 6-panel dashboard
+  - **Panel 1**: Request count (total requests, error count)
+  - **Panel 2**: Latency distribution (P50, P95, P99)
+  - **Panel 3**: Error rate (with breakdown by error type)
+  - **Panel 4**: SLO compliance status (pass/fail for each SLO)
+  - **Panel 5**: LLM cost breakdown (total cost, avg cost/request, tokens)
+  - **Panel 6**: RAG & quality metrics (quality score vs benchmark)
+  - Generates both HTML report + text console report
+  - Color-coded SLO pass/fail status
+
+- **config/slo.yaml**: SLO definitions (pre-configured):
+  - latency_p95_ms: 3000ms objective (99.5% target)
+  - error_rate_pct: 2% objective (99% target)
+  - daily_cost_usd: $2.5 objective (100% target)
+  - quality_score_avg: 0.75 objective (95% target)
+
+Files Generated:
+- `data/metrics.json`: Metrics snapshot with timestamp
+- `data/metrics.csv`: Detailed metrics in CSV format
+- `data/dashboard_report.html`: Interactive 6-panel dashboard HTML report
+
+Sample Metrics:
+```json
+{
+  "traffic": 10,
+  "latency_p50": 150.0,
+  "latency_p95": 150.0,
+  "latency_p99": 150.0,
+  "avg_cost_usd": 0.002,
+  "total_cost_usd": 0.0198,
+  "quality_avg": 0.88,
+  "error_rate_pct": 0.0
+}
+```
 
 ### 3.3 Alerts & Runbook
 - [ALERT_RULES_SCREENSHOT]: [Path to image]
