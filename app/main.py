@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+# Load .env BEFORE any other imports (especially before Langfuse)
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 
 from fastapi import FastAPI, HTTPException, Request
