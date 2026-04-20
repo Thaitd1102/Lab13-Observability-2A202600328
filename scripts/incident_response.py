@@ -97,6 +97,16 @@ class IncidentResponseTool:
         print(f"INCIDENT RESPONSE: {scenario.upper()}")
         print("="*80)
         
+        # Step 0: Reset metrics from previous test
+        print(f"\n[STEP 0] RESET METRICS (clear previous test data)")
+        print("-" * 80)
+        try:
+            reset_resp = self.client.post(f"{self.base_url}/metrics/reset")
+            print(f"Status: {reset_resp.json()}")
+        except Exception as e:
+            print(f"WARNING: Could not reset metrics: {e}")
+        time.sleep(1)
+        
         # Step 1: Inject incident
         print(f"\n[STEP 1] INJECT INCIDENT: {scenario}")
         print("-" * 80)
